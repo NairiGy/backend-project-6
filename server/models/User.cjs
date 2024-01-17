@@ -1,7 +1,7 @@
 // @ts-check
 
-const BaseModel = require('./BaseModel.cjs');
 const objectionUnique = require('objection-unique');
+const BaseModel = require('./BaseModel.cjs');
 const encrypt = require('../lib/secure.cjs');
 
 const unique = objectionUnique({ fields: ['email'] });

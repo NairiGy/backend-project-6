@@ -8,7 +8,7 @@ import fastifyStatic from '@fastify/static';
 import fastifyView from '@fastify/view';
 import fastifyFormbody from '@fastify/formbody';
 import fastifySecureSession from '@fastify/secure-session';
-import fastifyPassport from '@fastify/passport';
+import { Authenticator } from '@fastify/passport';
 import fastifySensible from '@fastify/sensible';
 import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
 import fastifyMethodOverride from 'fastify-method-override';
@@ -30,6 +30,7 @@ const __dirname = fileURLToPath(path.dirname(import.meta.url));
 
 const mode = process.env.NODE_ENV || 'development';
 // const isDevelopment = mode === 'development';
+const fastifyPassport = new Authenticator();
 
 const setUpViews = (app) => {
   const helpers = getHelpers(app);
