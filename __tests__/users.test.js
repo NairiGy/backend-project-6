@@ -1,7 +1,7 @@
 // @ts-check
 
 import _ from 'lodash';
-import fastify from 'fastify';
+import { fastify } from 'fastify';
 
 import init from '../server/plugin.js';
 import encrypt from '../server/lib/secure.cjs';
@@ -16,7 +16,7 @@ describe('test users CRUD', () => {
   beforeAll(async () => {
     app = fastify({
       exposeHeadRoutes: false,
-      logger: { target: 'pino-pretty' },
+      logger: { transport: { target: 'pino-pretty' } },
     });
     await init(app);
     knex = app.objection.knex;
@@ -26,11 +26,13 @@ describe('test users CRUD', () => {
     // тесты не должны зависеть друг от друга
     // перед каждым тестом выполняем миграции
     // и заполняем БД тестовыми данными
-    await knex.migrate.latest();
-    await prepareData(app);
+    // await knex.migrate.latest();
+    // await prepareData(app);
   });
 
   beforeEach(async () => {
+    await knex.migrate.latest();
+    await prepareData(app);
   });
 
   it('index', async () => {
@@ -70,10 +72,42 @@ describe('test users CRUD', () => {
     expect(user).toMatchObject(expected);
   });
 
+  it('update', async () => {
+    const params = testData.update;
+    const userBefore = await models.user.query().findById(1);
+    const response = await app.inject({
+      method: 'PATCH',
+      url: '/users/1',
+      payload: {
+        data: params,
+      },
+    });
+
+    expect(response.statusCode).toBe(302);
+    const expected = {
+      ..._.omit(params, 'password'),
+      passwordDigest: encrypt(params.password),
+    };
+    const userAfter = await models.user.query().findById(1);
+    expect({ ...userBefore, ...expected }).toMatchObject(userAfter);
+  });
+
+  it('delete', async () => {
+    const response = await app.inject({
+      method: 'DELETE',
+      url: '/users/1',
+    });
+
+    expect(response.statusCode).toBe(302);
+
+    const deletedUser = await models.user.query().findById(1);
+    expect(deletedUser).toBeUndefined();
+  });
+
   afterEach(async () => {
     // Пока Segmentation fault: 11
     // после каждого теста откатываем миграции
-    // await knex.migrate.rollback();
+    await knex.migrate.rollback();
   });
 
   afterAll(async () => {

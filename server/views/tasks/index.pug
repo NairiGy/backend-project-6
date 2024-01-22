@@ -1,0 +1,21 @@
+extends ../layouts/application.pug
+
+block content
+  table.table.table-striped
+    thead
+      tr
+        th= t('views.tasks.id')
+        th= t('views.tasks.name')
+        th= t('views.tasks.createdAt')
+        th= t('views.tasks.actions')
+    tbody
+      each task in tasks
+        tr
+          td= task.id
+          td= task.name
+          td= formatDate(task.createdAt)
+          td
+            a.btn.btn-primary.me-1(href=`/tasks/${task.id}`)='Изменить'
+            +formFor()(action=`/tasks/${task.id}` method='post')
+              input(name="_method" type="hidden" value="delete")
+              input.btn.btn-danger(type="submit" value="Удалить")
