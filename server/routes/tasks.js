@@ -1,89 +1,194 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
 import i18next from 'i18next';
+import { transaction } from 'objection';
+import _ from 'lodash';
+
+/**
+ * Maps each item with a selected flag based on the provided ids.
+ *
+ * @param {Array} items - The array of items to be mapped.
+ * @param {Array} ids - The array of selected item ids.
+ * @return {Array} The mapped array with selected flag added to each item.
+ */
+const getSelectedItems = (items, ids) => items.map((item) => ({
+  ...item,
+  selected: ids.includes(item.id),
+}));
 
 export default (app) => {
-  const { models } = app.objection;
+  const Task = app.objection.models.task;
+  const Status = app.objection.models.status;
+  const User = app.objection.models.user;
+  const Label = app.objection.models.label;
   app
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
-      const tasks = await models.task.query();
-      reply.render('/tasks/index', { tasks });
+      const statuses = await Status.query();
+      const users = await User.query();
+      const labels = await Label.query();
+      let query = Task.query().withGraphFetched('[status, creator, executor, labels]');
+      if (req.query.isCreatorUser) {
+        query = query.where('creatorId', req.user.id);
+      }
+      if (req.query.status) {
+        query = query.where('statusId', req.query.status);
+      }
+      if (req.query.executor) {
+        query = query.where('executorId', req.query.executor);
+      }
+      if (req.query.label) {
+        query = query.joinRelated('labels').where('labels.id', req.query.label);
+      } else {
+        query = query.withGraphFetched('labels');
+      }
+      const tasks = await query;
+
+      reply.render('/tasks/index', {
+        tasks, statuses, users, labels,
+      });
+
       return reply;
     })
-    .get('/tasks/new', { name: 'statuseNew' }, async (req, reply) => {
-      const task = new models.task();
-      reply.render('/tasks/new', { task });
+    .get('/tasks/new', { name: 'taskNew' }, async (req, reply) => {
+      const task = new Task();
+      const statuses = await Status.query();
+      const users = await User.query();
+      const labels = await Label.query();
+      reply.render('tasks/new', {
+        task, statuses, users, labels,
+      });
+      return reply;
     })
-    .get('tasks/:id', { name: 'viewTask' }, async (req, reply) => {
+    .get('/tasks/:id', { name: 'viewTask' }, async (req, reply) => {
       const { id } = req.params;
-      const task = await app.objection.models.task.query().findOne({ id });
-
+      const task = await Task.query().findOne({ id }).withGraphFetched('[status, creator, executor, labels]');
+      console.log(JSON.stringify(task));
       reply.render('/tasks/view', { task });
+      return reply;
     })
-    .get('/tasks/:id/edit', { name: 'statuseUpdate' }, async (req, reply) => {
-      const task = await models.task.query().where('id', req.params.id);
+    .get('/tasks/:id/edit', { name: 'taskUpdate' }, async (req, reply) => {
       if (!req.user) {
-        req.flash('error', i18next.t('flash.tasks.edit.notLoggedIn'));
+        req.flash('error', i18next.t('flash.authError'));
         reply.redirect(app.reverse('newSession'));
         return reply;
       }
-      console.log(JSON.stringify(task));
-      reply.render('task/edit', { task: task[0] });
+      const { id } = req.params;
+      const task = await Task.query().findOne({ id });
+      const statuses = await Status.query();
+      const users = await User.query();
+      const labels = await Label.query();
+      const relatedLabels = await task.$relatedQuery('labels');
+      const relatedLabelsIds = relatedLabels.map((label) => label.id);
+      const statusesWithSelected = getSelectedItems(statuses, [task.statusId]);
+      const usersWithSelected = getSelectedItems(users, [task.executorId]);
+      const labelsWithSelected = getSelectedItems(labels, relatedLabelsIds);
+      reply.render('tasks/edit', {
+        task,
+        statuses: statusesWithSelected,
+        users: usersWithSelected,
+        labels: labelsWithSelected,
+      });
       return reply;
     })
     .post('/tasks', async (req, reply) => {
-      const task = new models.task();
-      task.$set(req.body.data);
-      console.log(JSON.stringify(req.body.data));
+      if (!req.isAuthenticated()) {
+        req.flash('error', i18next.t('flash.authError'));
+        reply.redirect(app.reverse('newSession'));
+        return reply;
+      }
+      const task = new Task();
       try {
-        const validStatus = await models.task.fromJson(req.body.data);
-        await models.task.query().insert(validStatus);
+        const { labels } = req.body.data;
+        const data = {
+          ..._.omit(req.body.data, 'labels'),
+          statusId: Number(req.body.data.statusId),
+          executorId: Number(req.body.data.executorId),
+          creatorId: req.user.id,
+        };
+        await transaction(Task.knex(), async (trx) => {
+          task.$set(data);
+          const validTask = await Task.fromJson(data);
+          const insertedTask = await Task.query(trx).insert(validTask);
+          const toInsert = [labels].flat().map((lb) => Number(lb));
+          for (const labelId of toInsert) {
+            await insertedTask.$relatedQuery('labels', trx).relate(labelId);
+          }
+        });
         req.flash('info', i18next.t('flash.tasks.create.success'));
-        reply.redirect(app.reverse('root'));
+        reply.redirect(app.reverse('tasks'));
       } catch (e) {
         req.flash('error', i18next.t('flash.tasks.create.error'));
         console.log(e);
-        reply.render('task/new', { task, errors: e });
+        const statuses = await Status.query();
+        const users = await User.query();
+        const labels = await Label.query();
+        reply.render('tasks/new', {
+          task, statuses, users, labels, errors: e,
+        });
       }
       return reply;
     })
     .patch('/tasks/:id', async (req, reply) => {
+      if (!req.isAuthenticated()) {
+        req.flash('error', i18next.t('flash.authError'));
+        reply.redirect(app.reverse('newSession'));
+        return reply;
+      }
       const { id } = req.params;
-      console.log('------------------PATCH USERS ID');
-      const task = await app.objection.models.task.query().findOne({ id });
+      const task = await Task.query().findOne({ id });
       try {
-        await task.$query().patch(req.body.data);
+        await transaction(Task.knex(), async (trx) => {
+          await task.$query(trx).patch({
+            ..._.omit(req.body.data, 'labels'),
+            statusId: Number(req.body.data.statusId),
+            executorId: Number(req.body.data.executorId),
+          });
+          await task.$relatedQuery('labels', trx).unrelate();
+          const newLabels = [req.body.data.labels].flat();
+          const toInsert = newLabels.map((lb) => Number(lb));
+          for (const labelId of toInsert) {
+            await task.$relatedQuery('labels', trx).relate(labelId);
+          }
+        });
         req.flash('info', i18next.t('flash.tasks.update.success'));
         reply.redirect(app.reverse('tasks'));
       } catch (e) {
         req.flash('error', i18next.t('flash.tasks.update.error'));
         console.log(e);
-        reply.render('tasks/edit', { task, errors: e });
+        const relatedLabels = await task.$relatedQuery('labels');
+        const relatedLabelsIds = relatedLabels.map((label) => label.id);
+        const statuses = await Status.query();
+        const users = await User.query();
+        const labels = await Label.query();
+        const statusesWithSelected = getSelectedItems(statuses, [task.statusId]);
+        const usersWithSelected = getSelectedItems(users, [task.executorId]);
+        const labelsWithSelected = getSelectedItems(labels, relatedLabelsIds);
+        reply.render('tasks/edit', {
+          task,
+          statuses: statusesWithSelected,
+          users: usersWithSelected,
+          labels: labelsWithSelected,
+        });
       }
       return reply;
     })
     .delete('/tasks/:id', async (req, reply) => {
-      const { id } = req.params;
-      const task = await models.task.query().findOne({ id });
-      if (!req.user) {
-        console.log('/users/:id/edit11111111111111111111111');
-        req.flash('error', i18next.t('flash.tasks.edit.notLoggedIn'));
+      if (!req.isAuthenticated()) {
+        req.flash('error', i18next.t('flash.authError'));
         reply.redirect(app.reverse('newSession'));
         return reply;
       }
-      if (req.user.id != req.params.id) {
-        console.log('/users/:id/edit222222222222222222222222');
-        console.log(req.user);
-        console.log(req.params.id);
-        req.flash('error', i18next.t('flash.users.edit.notSameUser'));
-        reply.redirect(app.reverse('users'));
-        return reply;
-      }
+      const { id } = req.params;
+      const task = await Task.query().findOne({ id });
       try {
-        req.logOut();
-        await task.$query().delete();
-        req.flash('info', i18next.t('flash.users.delete.success'));
-        reply.redirect(app.reverse('users'));
+        await transaction(Task.knex(), async (trx) => {
+          await task.$relatedQuery('labels', trx).unrelate();
+          await task.$query(trx).delete();
+        });
+        req.flash('info', i18next.t('flash.tasks.delete.success'));
+        reply.redirect(app.reverse('tasks'));
       } catch (e) {
-        req.flash('error', i18next.t('flash.users.delete.error'));
+        req.flash('error', i18next.t('flash.tasks.delete.error'));
         console.log(e);
         reply.render('', { task, errors: e });
       }

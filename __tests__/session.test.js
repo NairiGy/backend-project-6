@@ -1,6 +1,6 @@
 // @ts-check
 
-import fastify from 'fastify';
+import { fastify } from 'fastify';
 import init from '../server/plugin.js';
 import { getTestData, prepareData } from './helpers/index.js';
 
@@ -12,7 +12,7 @@ describe('test session', () => {
   beforeAll(async () => {
     app = fastify({
       exposeHeadRoutes: false,
-      logger: { target: 'pino-pretty' },
+      logger: { transport: { target: 'pino-pretty' } },
     });
     await init(app);
     knex = app.objection.knex;

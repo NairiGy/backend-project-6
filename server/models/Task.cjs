@@ -47,5 +47,17 @@ module.exports = class Task extends BaseModel {
         to: 'statuses.id',
       },
     },
+    labels: {
+      relation: BaseModel.ManyToManyRelation,
+      modelClass: 'Label.cjs',
+      join: {
+        from: 'tasks.id',
+        through: {
+          from: 'tasks_labels.taskId',
+          to: 'tasks_labels.labelId',
+        },
+        to: 'labels.id',
+      },
+    },
   };
 };

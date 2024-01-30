@@ -3,6 +3,7 @@
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fastifyStatic from '@fastify/static';
+import Rollbar from 'rollbar';
 // NOTE: не поддердивает fastify 4.x
 // import fastifyErrorPage from 'fastify-error-page';
 import fastifyView from '@fastify/view';
@@ -122,6 +123,16 @@ export const options = {
 
 // eslint-disable-next-line no-unused-vars
 export default async (app, _options) => {
+  // include and initialize the rollbar library with your access token
+
+  const rollbar = new Rollbar({
+    accessToken: '2a931460db184b9fa1fef90c62be8554',
+    captureUncaught: true,
+    captureUnhandledRejections: true,
+  });
+
+  // record a generic message and send it to Rollbar
+  rollbar.log('Hello world!')
   await registerPlugins(app);
 
   await setupLocalization();

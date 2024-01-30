@@ -3,48 +3,39 @@
 import i18next from 'i18next';
 
 export default (app) => {
-  const { models } = app.objection;
+  const User = app.objection.models.user;
+  const Task = app.objection.models.task;
   app
     .get('/users', { name: 'users' }, async (req, reply) => {
-      const users = await models.user.query();
-      console.log('/users/----------------------');
+      const users = await User.query();
       reply.render('users/index', { users });
       return reply;
     })
     .get('/users/new', { name: 'newUser' }, (req, reply) => {
-      const user = new models.user();
-      console.log('/users/new----------------------');
+      const user = new User();
       reply.render('users/new', { user });
     })
     .get('/users/:id', async (req, reply) => {
-      const user = await models.user.query().where('id', req.params.id);
-      console.log('/users/:id/edit---------------------');
-      if (!req.user) {
-        console.log('/users/:id/edit11111111111111111111111');
-        req.flash('error', i18next.t('flash.users.edit.notLoggedIn'));
+      if (!req.isAuthenticated()) {
+        req.flash('error', i18next.t('flash.authError'));
         reply.redirect(app.reverse('newSession'));
         return reply;
       }
-      if (req.user.id != req.params.id) {
-        console.log('/users/:id/edit222222222222222222222222');
-        console.log(req.user);
-        console.log(req.params.id);
-        req.flash('error', i18next.t('flash.users.edit.notSameUser'));
+      if (req.user.id !== Number(req.params.id)) {
+        req.flash('error', i18next.t('flash.notSameUser'));
         reply.redirect(app.reverse('users'));
         return reply;
       }
-      console.log(JSON.stringify(user));
+      const user = await User.query().where('id', req.params.id);
       reply.render('users/edit', { user: user[0] });
       return reply;
     })
     .post('/users', async (req, reply) => {
-      const user = new models.user();
+      const user = new User();
       user.$set(req.body.data);
-      console.log('.post(/users)----------------');
-      console.log(JSON.stringify(req.body.data));
       try {
-        const validUser = await app.objection.models.user.fromJson(req.body.data);
-        await models.user.query().insert(validUser);
+        const validUser = await User.fromJson(req.body.data);
+        await User.query().insert(validUser);
         req.flash('info', i18next.t('flash.users.create.success'));
         reply.redirect(app.reverse('root'));
       } catch (e) {
@@ -56,9 +47,14 @@ export default (app) => {
       return reply;
     })
     .patch('/users/:id', { name: 'editUser' }, async (req, reply) => {
+      if (!req.isAuthenticated()) {
+        req.flash('error', i18next.t('flash.authError'));
+        reply.status(401);
+        reply.redirect(app.reverse('newSession'));
+        return reply;
+      }
       const { id } = req.params;
-      console.log('------------------PATCH USERS ID');
-      const user = await app.objection.models.user.query().findOne({ id });
+      const user = await User.query().findOne({ id });
       try {
         await user.$query().patch(req.body.data);
         req.flash('info', i18next.t('flash.users.update.success'));
@@ -71,19 +67,26 @@ export default (app) => {
       return reply;
     })
     .delete('/users/:id', { name: 'deleteUser' }, async (req, reply) => {
-      const { id } = req.params;
-      const user = await models.user.query().findOne({ id });
-      if (!req.user) {
-        console.log('/users/:id/edit11111111111111111111111');
-        req.flash('error', i18next.t('flash.users.edit.notLoggedIn'));
+      if (!req.isAuthenticated()) {
+        req.flash('error', i18next.t('flash.authError'));
+        reply.status(401);
         reply.redirect(app.reverse('newSession'));
         return reply;
       }
-      if (req.user.id != req.params.id) {
-        console.log('/users/:id/edit222222222222222222222222');
-        console.log(req.user);
-        console.log(req.params.id);
-        req.flash('error', i18next.t('flash.users.edit.notSameUser'));
+      const { id } = req.params;
+      const user = await User.query().findOne({ id });
+      if (req.user.id !== Number(req.params.id)) {
+        req.flash('error', i18next.t('flash.notSameUser'));
+        reply.redirect(app.reverse('users'));
+        return reply;
+      }
+      const tasks = await Task
+        .query()
+        .where('executorId', id)
+        .orWhere('creatorId', id);
+
+      if (tasks.length > 0) {
+        req.flash('error', i18next.t('flash.users.edit.userConnectedToTask'));
         reply.redirect(app.reverse('users'));
         return reply;
       }

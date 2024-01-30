@@ -1,6 +1,8 @@
 extends ../layouts/application.pug
 
 block content
+  h1= t('views.labels.title')
+  a.btn.btn-primary(href=route('labelNew'))= t('views.labels.new')
   table.table.table-striped
     thead
       tr
@@ -15,7 +17,7 @@ block content
           td= label.name
           td= formatDate(label.createdAt)
           td
-            a.btn.btn-primary.me-1(href=`/labels/${label.id}`)='Изменить'
             +formFor()(action=`/labels/${label.id}` method='post')
+              a.btn.btn-primary.me-1(href=`/labels/${label.id}/edit`)=t('buttons.change')
               input(name="_method" type="hidden" value="delete")
-              input.btn.btn-danger(type="submit" value="Удалить")
+              input.btn.btn-danger(type="submit" value=t('buttons.delete'))

@@ -1,12 +1,12 @@
 extends ../layouts/application.pug
 
 block content
+  h1= t('views.users.title')
   table.table.table-striped
     thead
       tr
         th= t('views.users.id')
-        th= t('views.users.firstName')
-        th= t('views.users.lastName')
+        th= t('views.users.fullName')
         th= t('views.users.email')
         th= t('views.users.createdAt')
         th= t('views.users.actions')
@@ -14,12 +14,12 @@ block content
       each user in users
         tr
           td= user.id
-          td= user.firstName
+          td= user.firstName + ' ' + user.lastName
           td= user.lastName
           td= user.email
           td= formatDate(user.createdAt)
           td
-            a.btn.btn-primary.me-1(href=`/users/${user.id}`)='Изменить'
             +formFor()(action=`/users/${user.id}` method='post')
+              a.btn.btn-primary.me-1(href=`/users/${user.id}/edit`)=t('buttons.change')
               input(name="_method" type="hidden" value="delete")
-              input.btn.btn-danger(type="submit" value="Удалить")
+              input.btn.btn-danger(type="submit" value=t('buttons.delete'))
