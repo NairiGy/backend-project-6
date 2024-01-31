@@ -5,7 +5,7 @@ services:
     plan: free
     # autoDeploy: false
     installCommand: make install
-    buildCommand: make build
+    buildCommand: make install
     startCommand: make start
     env:
       - key: NODE_ENV
