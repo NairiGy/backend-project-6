@@ -1,5 +1,7 @@
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/NairiGy/backend-project-6/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/NairiGy/backend-project-6/actions)
+[![Maintainability](https://api.codeclimate.com/v1/badges/bcb937aca47dc94b0fc9/maintainability)](https://codeclimate.com/github/NairiGy/backend-project-6/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/bcb937aca47dc94b0fc9/test_coverage)](https://codeclimate.com/github/NairiGy/backend-project-6/test_coverage)
 # fastify-nodejs-application
 
 [![Node CI](https://github.com/hexlet-boilerplates/fastify-nodejs-application/workflows/Node%20CI/badge.svg)](https://github.com/hexlet-boilerplates/fastify-nodejs-application/actions)
