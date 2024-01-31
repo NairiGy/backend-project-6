@@ -4,6 +4,7 @@ services:
     runtime: node
     plan: free
     # autoDeploy: false
+    installCommand: make install
     buildCommand: make build
     startCommand: make start
     env:
