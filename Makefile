@@ -2,7 +2,6 @@ setup: prepare install db-migrate
 
 install:
 	npm install
-	npm run build
 
 db-migrate:
 	npx knex migrate:latest
