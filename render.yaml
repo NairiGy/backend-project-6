@@ -3,6 +3,19 @@ services:
     name: fastify
     runtime: node
     plan: free
-    autoDeploy: false
-    buildCommand: make install
+    # autoDeploy: false
+    buildCommand: make build
     startCommand: make start
+    env:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+            name: PostgreSQL
+            property: connectionString
+
+databases:
+  - name: PostgreSQL
+    type: postgresql
+    plan: starter
+    version: 15
