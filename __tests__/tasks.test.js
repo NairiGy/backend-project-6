@@ -119,10 +119,12 @@ describe('test tasks CRUD', () => {
   });
 
   it('show', async () => {
+    const authCookie = await signInUser(app);
     const id = 1;
     const response = await app.inject({
       method: 'GET',
       url: `/tasks/${id}`,
+      cookies: authCookie,
     });
     expect(response.statusCode).toBe(200);
   });

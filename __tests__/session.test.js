@@ -12,7 +12,7 @@ describe('test session', () => {
   beforeAll(async () => {
     app = fastify({
       exposeHeadRoutes: false,
-      logger: { transport: { target: 'pino-pretty' } },
+      // logger: { transport: { target: 'pino-pretty' } },
     });
     await init(app);
     knex = app.objection.knex;
@@ -56,7 +56,7 @@ describe('test session', () => {
   });
 
   afterAll(async () => {
-    // await knex.migrate.rollback();
+    await knex.migrate.rollback();
     await app.close();
   });
 });
