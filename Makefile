@@ -2,13 +2,14 @@ setup: prepare install db-migrate
 
 install:
 	npm install
+	npm run build
 
 db-migrate:
 	npx knex migrate:latest
 
 build:
 	npm run build
-	
+
 prepare:
 	cp -n .env.example .env || true
 
