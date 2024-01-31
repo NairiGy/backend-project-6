@@ -7,6 +7,7 @@ db-migrate:
 	npx knex migrate:latest
 
 build:
+ 	npm install webpack-cli
 	npm install
 	npm run build
 
