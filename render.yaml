@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     autoDeploy: false
-    buildCommand: make install && make build && make db-migrate
+    buildCommand: make setup
     startCommand: make start
   # - name: database-migration
   #   type: job

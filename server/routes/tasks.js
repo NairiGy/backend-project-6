@@ -67,7 +67,7 @@ export default (app) => {
       return reply;
     })
     .get('/tasks/:id/edit', { name: 'taskUpdate' }, async (req, reply) => {
-      if (!req.user) {
+      if (!req.isAuthenticated()) {
         req.flash('error', i18next.t('flash.authError'));
         reply.redirect(app.reverse('newSession'));
         return reply;
