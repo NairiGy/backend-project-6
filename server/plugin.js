@@ -30,6 +30,7 @@ import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 const __dirname = fileURLToPath(path.dirname(import.meta.url));
 
 const mode = process.env.NODE_ENV || 'development';
+console.log(`Mode: ${mode}`);
 // const isDevelopment = mode === 'development';
 const fastifyPassport = new Authenticator();
 
