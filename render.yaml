@@ -4,16 +4,15 @@ services:
     runtime: node
     plan: free
     autoDeploy: false
-    buildCommand: make install
+    buildCommand: make install && make build && make db-migrate
     startCommand: make start
-#     env:
-#       - key: NODE_ENV
-#         value: production
-#       - key: DATABASE_URL
-#         fromDatabase:
-#             name: PostgreSQL
-#             property: connectionString
-
+  # - name: database-migration
+  #   type: job
+  #   plan: free
+  #   buildCommand: make db-migrate
+  #   environment:
+  #     - key: DATABASE_URL
+  #       value: 'postgres://postgresql_54lw_user:0zbHduxRmHLFLjjqDkbaofs3P9zwjJ2V@dpg-cmjpvp7qd2ns73bkg82g-a/postgresql_54lw'
 # databases:
 #   - name: PostgreSQL
 #     type: postgresql
