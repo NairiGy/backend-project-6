@@ -1,5 +1,5 @@
-- const getInputName = (property) => `data[${property.toLowerCase()}]`
-- const getInputId = (property) => `data_${property.toLowerCase()}`
+- const getInputName = (property) => `data[${property}]`
+- const getInputId = (property) => `data_${property}`
 
 mixin formFor(entity = null)
   form&attributes(attributes)
