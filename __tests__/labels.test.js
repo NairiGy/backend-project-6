@@ -80,13 +80,13 @@ describe('test labels CUD', () => {
     expect(deletedLabel).toBeUndefined();
   });
 
-  afterEach(async () => {
-    await knex('users').truncate();
-    await knex('labels').truncate();
-    await knex('statuses').truncate();
-    await knex('tasks').truncate();
-    await knex('tasks_labels').truncate();
-  });
+  // afterEach(async () => {
+  //   await knex('users').truncate();
+  //   await knex('labels').truncate();
+  //   await knex('statuses').truncate();
+  //   await knex('tasks').truncate();
+  //   await knex('tasks_labels').truncate();
+  // });
 
   afterAll(async () => {
     await app.close();

@@ -103,7 +103,7 @@ describe('test tasks CUD', () => {
 
   it('show', async () => {
     const authCookie = await signInUser(app);
-    const id = 1;
+    const id = 2;
     const response = await app.inject({
       method: 'GET',
       url: `/tasks/${id}`,
@@ -111,13 +111,13 @@ describe('test tasks CUD', () => {
     });
     expect(response.statusCode).toBe(200);
   });
-  afterEach(async () => {
-    await knex('users').truncate();
-    await knex('labels').truncate();
-    await knex('statuses').truncate();
-    await knex('tasks').truncate();
-    await knex('tasks_labels').truncate();
-  });
+  // afterEach(async () => {
+  //   await knex('users').truncate();
+  //   await knex('labels').truncate();
+  //   await knex('statuses').truncate();
+  //   await knex('tasks').truncate();
+  //   await knex('tasks_labels').truncate();
+  // });
 
   afterAll(async () => {
     await app.close();
