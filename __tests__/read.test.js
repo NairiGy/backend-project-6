@@ -13,6 +13,7 @@ beforeAll(async () => {
   });
   await init(app);
   knex = app.objection.knex;
+  await knex.migrate.latest();
 });
 
 beforeEach(async () => {
