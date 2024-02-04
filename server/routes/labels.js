@@ -3,12 +3,12 @@ import i18next from 'i18next';
 export default (app) => {
   const Label = app.objection.models.label;
   app
-    .get('/labels', { name: 'labels' }, async (req, reply) => {
+    .get('/labels', { name: 'labels', preValidation: app.authenticate }, async (req, reply) => {
       const labels = await Label.query();
       reply.render('/labels/index', { labels });
       return reply;
     })
-    .get('/labels/new', { name: 'labelNew' }, (req, reply) => {
+    .get('/labels/new', { name: 'newLabel', preValidation: app.authenticate }, (req, reply) => {
       const label = new Label();
       reply.render('/labels/new', { label });
     })

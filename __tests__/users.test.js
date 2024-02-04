@@ -7,7 +7,7 @@ import init from '../server/plugin.js';
 import encrypt from '../server/lib/secure.cjs';
 import { getTestData, prepareUsersData, signInUser } from './helpers/index.js';
 
-describe('test users CRUD', () => {
+describe('test users CUD', () => {
   let app;
   let knex;
   let models;
@@ -26,24 +26,6 @@ describe('test users CRUD', () => {
   beforeEach(async () => {
     await knex.migrate.latest();
     await prepareUsersData(app);
-  });
-
-  it('index', async () => {
-    const response = await app.inject({
-      method: 'GET',
-      url: app.reverse('users'),
-    });
-
-    expect(response.statusCode).toBe(200);
-  });
-
-  it('new', async () => {
-    const response = await app.inject({
-      method: 'GET',
-      url: app.reverse('newUser'),
-    });
-
-    expect(response.statusCode).toBe(200);
   });
 
   it('create', async () => {

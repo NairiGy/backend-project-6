@@ -4,12 +4,12 @@ export default (app) => {
   const Status = app.objection.models.status;
   const Task = app.objection.models.task;
   app
-    .get('/statuses', { name: 'statuses' }, async (req, reply) => {
+    .get('/statuses', { name: 'statuses', preValidation: app.authenticate }, async (req, reply) => {
       const statuses = await Status.query();
       reply.render('/statuses/index', { statuses });
       return reply;
     })
-    .get('/statuses/new', { name: 'statusNew' }, (req, reply) => {
+    .get('/statuses/new', { name: 'newStatus', preValidation: app.authenticate }, (req, reply) => {
       const status = new Status();
       reply.render('/statuses/new', { status });
     })

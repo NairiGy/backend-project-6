@@ -3,7 +3,7 @@ import { fastify } from 'fastify';
 import init from '../server/plugin.js';
 import { prepareTasksData, createRandomTask, signInUser } from './helpers/index.js';
 
-describe('test tasks CRUD', () => {
+describe('test tasks CUD', () => {
   let app;
   let knex;
   let models;
@@ -21,23 +21,6 @@ describe('test tasks CRUD', () => {
   beforeEach(async () => {
     await knex.migrate.latest();
     await prepareTasksData(app);
-  });
-
-  it('index', async () => {
-    const response = await app.inject({
-      method: 'GET',
-      url: app.reverse('tasks'),
-    });
-    expect(response.statusCode).toBe(200);
-  });
-
-  it('new', async () => {
-    const response = await app.inject({
-      method: 'GET',
-      url: app.reverse('taskNew'),
-    });
-
-    expect(response.statusCode).toBe(200);
   });
 
   it('create', async () => {

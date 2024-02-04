@@ -22,7 +22,7 @@ export default (app) => {
   const User = app.objection.models.user;
   const Label = app.objection.models.label;
   app
-    .get('/tasks', { name: 'tasks' }, async (req, reply) => {
+    .get('/tasks', { name: 'tasks', preValidation: app.authenticate }, async (req, reply) => {
       const statuses = await Status.query();
       const users = await User.query();
       const labels = await Label.query();
@@ -49,7 +49,7 @@ export default (app) => {
 
       return reply;
     })
-    .get('/tasks/new', { name: 'taskNew' }, async (req, reply) => {
+    .get('/tasks/new', { name: 'newTask', preValidation: app.authenticate }, async (req, reply) => {
       const task = new Task();
       const statuses = await Status.query();
       const users = await User.query();

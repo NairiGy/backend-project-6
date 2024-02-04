@@ -18,7 +18,7 @@ export default {
           error: 'Failed to register',
           success: 'User registered successfully',
         },
-        edit: {
+        update: {
           notLoggedIn: 'You are not logged in',
           notSameUser: 'You can only edit your own profile',
           userConnectedToTask: 'You can not delete this user. User is connected to one or more tasks',
@@ -35,7 +35,7 @@ export default {
           success: 'Label created successfully',
           error: 'Failed to create label',
         },
-        edit: {
+        update: {
           success: 'Label updated successfully',
           error: 'Failed to update label',
           labelConnectedToTask: 'You can not delete this label. Label is connected to one or more tasks',
@@ -50,7 +50,7 @@ export default {
           success: 'Status created successfully',
           error: 'Failed to create status',
         },
-        edit: {
+        update: {
           success: 'Status updated successfully',
           error: 'Failed to update status',
         },

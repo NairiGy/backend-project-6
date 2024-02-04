@@ -4,7 +4,7 @@ block header
   = t('views.statuses.title')
 
 block content
-  +formFor()(action=`/statuses/${status.id}/edit` method='post')
+  +formFor()(action=`/statuses/${status.id}` method='post')
     input(name="_method" type="hidden" value="patch")
     +input(status, 'name', t('views.statuses.name'), errors)(type="text" value= status.name)
     +submit(label)(value=t('buttons.change'))

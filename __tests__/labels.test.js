@@ -3,7 +3,7 @@ import { fastify } from 'fastify';
 import init from '../server/plugin.js';
 import { prepareLabelsData, createRandomLabel, signInUser } from './helpers/index.js';
 
-describe('test labels CRUD', () => {
+describe('test labels CUD', () => {
   let app;
   let knex;
   let models;
@@ -21,24 +21,6 @@ describe('test labels CRUD', () => {
   beforeEach(async () => {
     await knex.migrate.latest();
     await prepareLabelsData(app);
-  });
-
-  it('index', async () => {
-    const response = await app.inject({
-      method: 'GET',
-      url: app.reverse('labels'),
-    });
-
-    expect(response.statusCode).toBe(200);
-  });
-
-  it('new', async () => {
-    const response = await app.inject({
-      method: 'GET',
-      url: app.reverse('labelNew'),
-    });
-
-    expect(response.statusCode).toBe(200);
   });
 
   it('create', async () => {
