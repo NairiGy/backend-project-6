@@ -92,7 +92,11 @@ describe('test statuses CUD', () => {
   });
 
   afterEach(async () => {
-    await knex.migrate.rollback();
+    await knex('users').truncate();
+    await knex('labels').truncate();
+    await knex('statuses').truncate();
+    await knex('tasks').truncate();
+    await knex('tasks_labels').truncate();
   });
 
   afterAll(async () => {

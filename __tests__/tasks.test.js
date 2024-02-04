@@ -112,7 +112,11 @@ describe('test tasks CUD', () => {
     expect(response.statusCode).toBe(200);
   });
   afterEach(async () => {
-    await knex.migrate.rollback();
+    await knex('users').truncate();
+    await knex('labels').truncate();
+    await knex('statuses').truncate();
+    await knex('tasks').truncate();
+    await knex('tasks_labels').truncate();
   });
 
   afterAll(async () => {
