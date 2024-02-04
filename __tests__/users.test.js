@@ -96,6 +96,7 @@ describe('test users CUD', () => {
   });
 
   afterAll(async () => {
+    await knex.migrate.rollback();
     await app.close();
   });
 });

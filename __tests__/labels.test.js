@@ -82,6 +82,7 @@ describe('test labels CUD', () => {
   });
 
   afterAll(async () => {
+    await knex.migrate.rollback();
     await app.close();
   });
 });
