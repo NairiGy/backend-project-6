@@ -23,7 +23,6 @@ describe('test users CUD', () => {
   });
 
   beforeEach(async () => {
-    await knex.migrate.rollback();
     await knex.migrate.latest();
     await prepareUsersData(app);
   });
@@ -95,8 +94,11 @@ describe('test users CUD', () => {
     expect(deletedUser).toBeUndefined();
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await knex.migrate.rollback();
+  });
+
+  afterAll(async () => {
     await app.close();
   });
 });

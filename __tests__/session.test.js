@@ -58,8 +58,11 @@ describe('test session', () => {
     expect(responseSignOut.statusCode).toBe(302);
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await knex.migrate.rollback();
+  });
+  
+  afterAll(async () => {
     await app.close();
   });
 });

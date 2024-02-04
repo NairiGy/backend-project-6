@@ -19,7 +19,6 @@ describe('test tasks CUD', () => {
   });
 
   beforeEach(async () => {
-    await knex.migrate.rollback();
     await knex.migrate.latest();
     await prepareTasksData(app);
   });
@@ -113,8 +112,11 @@ describe('test tasks CUD', () => {
     expect(response.statusCode).toBe(200);
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await knex.migrate.rollback();
+  });
+
+  afterAll(async () => {
     await app.close();
   });
 });

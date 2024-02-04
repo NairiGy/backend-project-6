@@ -97,7 +97,10 @@ describe('test entity creation views', () => {
   });
 });
 
-afterAll(async () => {
+afterEach(async () => {
   await knex.migrate.rollback();
+});
+
+afterAll(async () => {
   await app.close();
 });

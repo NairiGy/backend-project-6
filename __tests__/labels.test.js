@@ -19,7 +19,6 @@ describe('test labels CUD', () => {
   });
 
   beforeEach(async () => {
-    await knex.migrate.rollback();
     await knex.migrate.latest();
     await prepareLabelsData(app);
   });
@@ -81,8 +80,11 @@ describe('test labels CUD', () => {
     expect(deletedLabel).toBeUndefined();
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await knex.migrate.rollback();
+  });
+
+  afterAll(async () => {
     await app.close();
   });
 });

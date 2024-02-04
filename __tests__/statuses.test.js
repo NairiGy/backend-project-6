@@ -19,7 +19,6 @@ describe('test statuses CUD', () => {
   });
 
   beforeEach(async () => {
-    await knex.migrate.rollback();
     await knex.migrate.latest();
     await prepareStatusesData(app);
   });
@@ -92,8 +91,11 @@ describe('test statuses CUD', () => {
     expect(deletedStatus).toBeUndefined();
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await knex.migrate.rollback();
+  });
+  
+  afterAll(async () => {
     await app.close();
   });
 });
