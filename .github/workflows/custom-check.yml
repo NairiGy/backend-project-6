@@ -17,8 +17,6 @@ jobs:
         uses: paambaati/codeclimate-action@v2.7.4
         # Add Code Climate secret key
         env:
-          ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
-          SESSION_KEY: ${{ secrets.SESSION_KEY }}
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
           coverageCommand: make test-coverage
