@@ -66,12 +66,7 @@ export default (app) => {
       reply.render('/tasks/view', { task });
       return reply;
     })
-    .get('/tasks/:id/edit', { name: 'taskUpdate' }, async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
+    .get('/tasks/:id/edit', { name: 'taskUpdate', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const task = await Task.query().findOne({ id });
       const statuses = await Status.query();
@@ -90,12 +85,7 @@ export default (app) => {
       });
       return reply;
     })
-    .post('/tasks', async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
+    .post('/tasks', { preValidation: app.authenticate }, async (req, reply) => {
       const task = new Task();
       try {
         const { labels } = req.body.data;
@@ -128,12 +118,7 @@ export default (app) => {
       }
       return reply;
     })
-    .patch('/tasks/:id', async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
+    .patch('/tasks/:id', { preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const task = await Task.query().findOne({ id });
       try {
@@ -172,12 +157,7 @@ export default (app) => {
       }
       return reply;
     })
-    .delete('/tasks/:id', async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
+    .delete('/tasks/:id', { preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const task = await Task.query().findOne({ id });
       try {

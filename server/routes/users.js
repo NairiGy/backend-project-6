@@ -15,12 +15,7 @@ export default (app) => {
       const user = new User();
       reply.render('users/new', { user });
     })
-    .get('/users/:id', async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
+    .get('/users/:id/edit', { preValidation: app.authenticate }, async (req, reply) => {
       if (req.user.id !== Number(req.params.id)) {
         req.flash('error', i18next.t('flash.notSameUser'));
         reply.redirect(app.reverse('users'));
@@ -46,13 +41,7 @@ export default (app) => {
 
       return reply;
     })
-    .patch('/users/:id', { name: 'editUser' }, async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.status(401);
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
+    .patch('/users/:id', { name: 'editUser', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const user = await User.query().findOne({ id });
       try {
@@ -66,13 +55,7 @@ export default (app) => {
       }
       return reply;
     })
-    .delete('/users/:id', { name: 'deleteUser' }, async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.status(401);
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
+    .delete('/users/:id', { name: 'deleteUser', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const user = await User.query().findOne({ id });
       if (req.user.id !== Number(req.params.id)) {

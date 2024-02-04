@@ -13,24 +13,13 @@ export default (app) => {
       const status = new Status();
       reply.render('/statuses/new', { status });
     })
-    .get('/statuses/:id/edit', { name: 'statusUpdate' }, async (req, reply) => {
+    .get('/statuses/:id/edit', { name: 'statusUpdate', preValidation: app.authenticate }, async (req, reply) => {
       const status = await Status.query().where('id', req.params.id);
-      if (!req.user) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
       console.log(JSON.stringify(status));
       reply.render('statuses/edit', { status: status[0] });
       return reply;
     })
-    .post('/statuses', async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.status(401);
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
+    .post('/statuses', { preValidation: app.authenticate }, async (req, reply) => {
       const status = new Status();
       status.$set(req.body.data);
       console.log(JSON.stringify(req.body.data));
@@ -46,15 +35,8 @@ export default (app) => {
       }
       return reply;
     })
-    .patch('/statuses/:id', async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.status(401);
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
+    .patch('/statuses/:id', { preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
-      console.log('------------------PATCH labels ID');
       const status = await Status.query().findOne({ id });
       try {
         await status.$query().patch(req.body.data);
@@ -67,13 +49,7 @@ export default (app) => {
       }
       return reply;
     })
-    .delete('/statuses/:id', async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.status(401);
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
+    .delete('/statuses/:id', { preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const status = await Status.query().findOne({ id });
       const tasks = await Task

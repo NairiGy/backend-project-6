@@ -77,7 +77,7 @@ describe('test users CRUD', () => {
     };
     const userBefore = await models.user.query().findById(id);
     const responseNoAuth = await app.inject(requestBody);
-    expect(responseNoAuth.statusCode).toBe(401);
+    expect(responseNoAuth.statusCode).toBe(302);
 
     const authCookie = await signInUser(app);
     const responseWithAuth = await app.inject({
@@ -103,7 +103,7 @@ describe('test users CRUD', () => {
     };
     const responseNoAuth = await app.inject(requestBody);
 
-    expect(responseNoAuth.statusCode).toBe(401);
+    expect(responseNoAuth.statusCode).toBe(302);
     const responseWithAuth = await app.inject({
       ...requestBody,
       cookies: authCookie,

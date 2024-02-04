@@ -51,7 +51,7 @@ describe('test statuses CRUD', () => {
       },
     };
     const responseNoAuth = await app.inject(requestBody);
-    expect(responseNoAuth.statusCode).toBe(401);
+    expect(responseNoAuth.statusCode).toBe(302);
 
     const authCookie = await signInUser(app);
     const responseWithAuth = await app.inject({
@@ -74,7 +74,7 @@ describe('test statuses CRUD', () => {
       },
     };
     const responseNoAuth = await app.inject(requestBody);
-    expect(responseNoAuth.statusCode).toBe(401);
+    expect(responseNoAuth.statusCode).toBe(302);
 
     const authCookie = await signInUser(app);
     const statusBefore = await models.status.query().findById(id);
@@ -96,7 +96,7 @@ describe('test statuses CRUD', () => {
       url: `/statuses/${id}`,
     };
     const responseNoAuth = await app.inject(requestBody);
-    expect(responseNoAuth.statusCode).toBe(401);
+    expect(responseNoAuth.statusCode).toBe(302);
 
     const authCookie = await signInUser(app);
     const responseWithAuth = await app.inject({

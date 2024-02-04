@@ -22,12 +22,7 @@ export default (app) => {
       reply.render('labels/edit', { label: label[0] });
       return reply;
     })
-    .post('/labels', async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
+    .post('/labels', { preValidation: app.authenticate }, async (req, reply) => {
       const label = new Label();
       label.$set(req.body.data);
       try {
@@ -42,12 +37,7 @@ export default (app) => {
       }
       return reply;
     })
-    .patch('/labels/:id', async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
+    .patch('/labels/:id', { preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const label = await Label.query().findOne({ id });
       try {
@@ -61,12 +51,7 @@ export default (app) => {
       }
       return reply;
     })
-    .delete('/labels/:id', async (req, reply) => {
-      if (!req.isAuthenticated()) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
+    .delete('/labels/:id', { preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const label = await Label.query().findOne({ id });
       const labelWithTasks = await Label.query().findById(id).withGraphFetched('tasks');
