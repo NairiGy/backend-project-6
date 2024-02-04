@@ -9,8 +9,8 @@ jobs:
         env: 
           CI: true
       - run: make lint
-      - run: make test
       - run: make prepare
+      - run: make test
       - name: Test & publish code coverage
       # Publish code coverage on Code Climate
       # https://github.com/paambaati/codeclimate-action
