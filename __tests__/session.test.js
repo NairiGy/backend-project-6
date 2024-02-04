@@ -11,10 +11,14 @@ describe('test session', () => {
   beforeAll(async () => {
     app = fastify({
       exposeHeadRoutes: false,
-      // logger: { transport: { target: 'pino-pretty' } },
+      logger: { transport: { target: 'pino-pretty' } },
     });
     await init(app);
     knex = app.objection.knex;
+  });
+
+  beforeEach(async () => {
+    await knex.migrate.rollback();
     await knex.migrate.latest();
     await prepareData(app);
     testData = getTestData();

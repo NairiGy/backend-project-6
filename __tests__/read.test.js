@@ -9,14 +9,14 @@ let knex;
 beforeAll(async () => {
   app = fastify({
     exposeHeadRoutes: false,
-    // logger: { transport: { target: 'pino-pretty' } },
+    logger: { transport: { target: 'pino-pretty' } },
   });
   await init(app);
   knex = app.objection.knex;
-  await knex.migrate.latest();
 });
 
 beforeEach(async () => {
+  await knex.migrate.rollback();
   await knex.migrate.latest();
   await prepareUsersData(app);
 });

@@ -11,7 +11,7 @@ describe('test labels CUD', () => {
   beforeAll(async () => {
     app = fastify({
       exposeHeadRoutes: false,
-      // logger: { transport: { target: 'pino-pretty' } },
+      logger: { transport: { target: 'pino-pretty' } },
     });
     await init(app);
     knex = app.objection.knex;
@@ -19,6 +19,7 @@ describe('test labels CUD', () => {
   });
 
   beforeEach(async () => {
+    await knex.migrate.rollback();
     await knex.migrate.latest();
     await prepareLabelsData(app);
   });
@@ -79,14 +80,6 @@ describe('test labels CUD', () => {
     const deletedLabel = await models.label.query().findById(id);
     expect(deletedLabel).toBeUndefined();
   });
-
-  // afterEach(async () => {
-  //   await knex('users').truncate();
-  //   await knex('labels').truncate();
-  //   await knex('statuses').truncate();
-  //   await knex('tasks').truncate();
-  //   await knex('tasks_labels').truncate();
-  // });
 
   afterAll(async () => {
     await app.close();

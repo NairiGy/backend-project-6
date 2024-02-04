@@ -19,6 +19,7 @@ describe('test tasks CUD', () => {
   });
 
   beforeEach(async () => {
+    await knex.migrate.rollback();
     await knex.migrate.latest();
     await prepareTasksData(app);
   });

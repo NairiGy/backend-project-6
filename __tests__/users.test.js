@@ -15,7 +15,7 @@ describe('test users CUD', () => {
   beforeAll(async () => {
     app = fastify({
       exposeHeadRoutes: false,
-      // logger: { transport: { target: 'pino-pretty' } },
+      logger: { transport: { target: 'pino-pretty' } },
     });
     await init(app);
     knex = app.objection.knex;
@@ -23,6 +23,7 @@ describe('test users CUD', () => {
   });
 
   beforeEach(async () => {
+    await knex.migrate.rollback();
     await knex.migrate.latest();
     await prepareUsersData(app);
   });
@@ -93,14 +94,6 @@ describe('test users CUD', () => {
     const deletedUser = await models.user.query().findById(id);
     expect(deletedUser).toBeUndefined();
   });
-
-  // afterEach(async () => {
-  //   await knex('users').truncate();
-  //   await knex('labels').truncate();
-  //   await knex('statuses').truncate();
-  //   await knex('tasks').truncate();
-  //   await knex('tasks_labels').truncate();
-  // });
 
   afterAll(async () => {
     await app.close();

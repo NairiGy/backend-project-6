@@ -22,14 +22,14 @@ export const test = {
   client: 'sqlite3',
   connection: ':memory:',
   useNullAsDefault: true,
-  debug: true,
+  // debug: true,
   migrations,
 };
 
 export const production = {
   client: 'pg',
   connection: 'postgres://postgresql_54lw_user:0zbHduxRmHLFLjjqDkbaofs3P9zwjJ2V@dpg-cmjpvp7qd2ns73bkg82g-a/postgresql_54lw',
-  debug: true,
+  // debug: true,
   useNullAsDefault: true,
   migrations,
 };

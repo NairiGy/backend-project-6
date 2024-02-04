@@ -19,6 +19,7 @@ describe('test statuses CUD', () => {
   });
 
   beforeEach(async () => {
+    await knex.migrate.rollback();
     await knex.migrate.latest();
     await prepareStatusesData(app);
   });
