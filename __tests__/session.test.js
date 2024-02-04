@@ -61,7 +61,7 @@ describe('test session', () => {
   afterEach(async () => {
     await knex.migrate.rollback();
   });
-  
+
   afterAll(async () => {
     await app.close();
   });
