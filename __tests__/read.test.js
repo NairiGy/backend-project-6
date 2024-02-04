@@ -16,7 +16,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  await knex.migrate.rollback();
   await knex.migrate.latest();
   await prepareUsersData(app);
 });

@@ -27,9 +27,9 @@ export const createRandomLabel = () => ({
 export const createRandomTask = () => ({
   name: faker.lorem.sentence(),
   description: faker.lorem.paragraph(),
-  statusId: faker.datatype.number({ min: 1, max: 5 }),
-  executorId: faker.datatype.number({ min: 1, max: 5 }),
-  labels: [faker.datatype.number({ min: 1, max: 5 }), faker.datatype.number({ min: 1, max: 5 })],
+  statusId: faker.number.int({ min: 1, max: 5 }),
+  executorId: faker.number.int({ min: 1, max: 5 }),
+  labels: [faker.number.int({ min: 1, max: 5 }), faker.number.int({ min: 1, max: 5 })],
 });
 
 export const prepareStatusesData = async (app) => {
@@ -56,9 +56,9 @@ export const prepareTasksData = async (app) => {
   const tasks = Array(5).fill().map(() => ({
     name: faker.lorem.sentence(),
     description: faker.lorem.paragraph(),
-    status_id: faker.datatype.number({ min: 1, max: statuses.length }),
-    executor_id: faker.datatype.number({ min: 1, max: users.length }),
-    creator_id: faker.datatype.number({ min: 1, max: users.length }),
+    status_id: faker.number.int({ min: 1, max: statuses.length }),
+    executor_id: faker.number.int({ min: 1, max: users.length }),
+    creator_id: faker.number.int({ min: 1, max: users.length }),
   }));
 
   await knex('tasks').insert(tasks);
