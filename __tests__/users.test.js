@@ -1,5 +1,4 @@
 // @ts-check
-
 import _ from 'lodash';
 import { fastify } from 'fastify';
 
