@@ -126,7 +126,7 @@ export default async (app, _options) => {
   // include and initialize the rollbar library with your access token
 
   const rollbar = new Rollbar({
-    accessToken: process.env.ROLLBAR_TOKEN,
+    accessToken: process.env.ROLLBAR_TOKEN || '2a931460db184b9fa1fef90c62be8554',
     captureUncaught: true,
     captureUnhandledRejections: true,
   });
