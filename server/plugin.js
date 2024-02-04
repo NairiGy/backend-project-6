@@ -30,7 +30,6 @@ import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 const __dirname = fileURLToPath(path.dirname(import.meta.url));
 
 const mode = process.env.NODE_ENV || 'development';
-console.log(`Mode: ${mode}`);
 // const isDevelopment = mode === 'development';
 const fastifyPassport = new Authenticator();
 
@@ -89,7 +88,6 @@ const registerPlugins = async (app) => {
   await app.register(fastifyFormbody, { parser: qs.parse });
   await app.register(fastifySecureSession, {
     secret: process.env.SESSION_KEY,
-    //secret: '4fe91796c30bd989d95b62dc46c7c3ba0b6aa2df2187400586a4121c54c53b85',
     cookie: {
       path: '/',
     },
