@@ -62,7 +62,6 @@ export default (app) => {
     .get('/tasks/:id', { name: 'viewTask' }, async (req, reply) => {
       const { id } = req.params;
       const task = await Task.query().findOne({ id }).withGraphFetched('[status, creator, executor, labels]');
-      console.log(JSON.stringify(task));
       reply.render('/tasks/view', { task });
       return reply;
     })
