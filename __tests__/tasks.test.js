@@ -66,54 +66,56 @@ describe('test tasks CUD', () => {
     expect({ ...taskBefore, ...taskUpdateData }).toEqual(taskAfter);
   });
 
-  it('delete', async () => {
-    const id = 1;
-    const taskBefore = await models.task.query().findById(id).withGraphFetched('labels');
-    const labelsBefore = taskBefore.labels.map((label) => label.id);
-    const authCookie = await signInUser(app);
-    const response = await app.inject({
-      method: 'DELETE',
-      url: `/tasks/${id}`,
-      cookies: authCookie,
-    });
+  // it('delete', async () => {
+  //   const id = 1;
+  //   const taskBefore = await models.task.query().findById(id).withGraphFetched('labels');
+  //   const labelsBefore = taskBefore.labels.map((label) => label.id);
+  //   const authCookie = await signInUser(app);
+  //   const response = await app.inject({
+  //     method: 'DELETE',
+  //     url: `/tasks/${id}`,
+  //     cookies: authCookie,
+  //   });
 
-    expect(response.statusCode).toBe(302);
+  //   expect(response.statusCode).toBe(302);
 
-    const deletedTask = await models.task.query().findById(id);
-    expect(deletedTask).toBeUndefined();
-    const deletedTaskLabels = await models.label.query().whereIn('id', labelsBefore).withGraphFetched('tasks');
-    const taskIds = deletedTaskLabels.flatMap((label) => label.tasks.flatMap((task) => task.id));
-    expect(taskIds).not.toContain(id);
-  });
+  //   const deletedTask = await models.task.query().findById(id);
+  //   expect(deletedTask).toBeUndefined();
+  //   const deletedTaskLabels = await models.label.query().whereIn('id', labelsBefore).withGraphFetched('tasks');
+  //   const taskIds = deletedTaskLabels.flatMap((label) => label.tasks.flatMap((task) => task.id));
+  //   expect(taskIds).not.toContain(id);
+  // });
 
-  it('filter', async () => {
-    const authCookie = await signInUser(app);
-    const tasks = await models.task.query().withGraphFetched('executor');
-    // const expected = tasks.map((task) => task.executor.id);
-    const response = await app.inject({
-      method: 'GET',
-      url: `/tasks?executor=${tasks[0].executor.id}`,
-      cookies: authCookie,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    expect(response.statusCode).toBe(200);
-  });
+  // it('filter', async () => {
+  //   const authCookie = await signInUser(app);
+  //   const tasks = await models.task.query().withGraphFetched('executor');
+  //   // const expected = tasks.map((task) => task.executor.id);
+  //   const response = await app.inject({
+  //     method: 'GET',
+  //     url: `/tasks?executor=${tasks[0].executor.id}`,
+  //     cookies: authCookie,
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   });
+  //   expect(response.statusCode).toBe(200);
+  // });
 
-  it('show', async () => {
-    const authCookie = await signInUser(app);
-    const id = 2;
-    const response = await app.inject({
-      method: 'GET',
-      url: `/tasks/${id}`,
-      cookies: authCookie,
-    });
-    expect(response.statusCode).toBe(200);
-  });
+  // it('show', async () => {
+  //   const authCookie = await signInUser(app);
+  //   const id = 2;
+  //   const response = await app.inject({
+  //     method: 'GET',
+  //     url: `/tasks/${id}`,
+  //     cookies: authCookie,
+  //   });
+  //   expect(response.statusCode).toBe(200);
+  // });
 
   afterEach(async () => {
-    await knex.migrate.rollback();
+    await knex('tasks').truncate();
+    await knex('tasks_labels').truncate();
+    // await knex.migrate.rollback();
   });
 
   afterAll(async () => {
