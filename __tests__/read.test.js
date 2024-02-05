@@ -97,7 +97,12 @@ describe('test entity creation views', () => {
 });
 
 afterEach(async () => {
-  await knex.migrate.rollback();
+  await knex('tasks').truncate();
+  await knex('tasks_labels').truncate();
+  await knex('labels').truncate();
+  await knex('users').truncate();
+  await knex('statuses').truncate();
+  // await knex.migrate.rollback();
 });
 
 afterAll(async () => {
