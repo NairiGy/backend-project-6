@@ -66,25 +66,25 @@ describe('test tasks CUD', () => {
     expect({ ...taskBefore, ...taskUpdateData }).toEqual(taskAfter);
   });
 
-  // it('delete', async () => {
-  //   const id = 1;
-  //   const taskBefore = await models.task.query().findById(id).withGraphFetched('labels');
-  //   const labelsBefore = taskBefore.labels.map((label) => label.id);
-  //   const authCookie = await signInUser(app);
-  //   const response = await app.inject({
-  //     method: 'DELETE',
-  //     url: `/tasks/${id}`,
-  //     cookies: authCookie,
-  //   });
+  it('delete', async () => {
+    const id = 1;
+    const taskBefore = await models.task.query().findById(id).withGraphFetched('labels');
+    const labelsBefore = taskBefore.labels.map((label) => label.id);
+    const authCookie = await signInUser(app);
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `/tasks/${id}`,
+      cookies: authCookie,
+    });
 
-  //   expect(response.statusCode).toBe(302);
+    expect(response.statusCode).toBe(302);
 
-  //   const deletedTask = await models.task.query().findById(id);
-  //   expect(deletedTask).toBeUndefined();
-  //   const deletedTaskLabels = await models.label.query().whereIn('id', labelsBefore).withGraphFetched('tasks');
-  //   const taskIds = deletedTaskLabels.flatMap((label) => label.tasks.flatMap((task) => task.id));
-  //   expect(taskIds).not.toContain(id);
-  // });
+    const deletedTask = await models.task.query().findById(id);
+    expect(deletedTask).toBeUndefined();
+    const deletedTaskLabels = await models.label.query().whereIn('id', labelsBefore).withGraphFetched('tasks');
+    const taskIds = deletedTaskLabels.flatMap((label) => label.tasks.flatMap((task) => task.id));
+    expect(taskIds).not.toContain(id);
+  });
 
   // it('filter', async () => {
   //   const authCookie = await signInUser(app);
@@ -115,6 +115,9 @@ describe('test tasks CUD', () => {
   afterEach(async () => {
     await knex('tasks').truncate();
     await knex('tasks_labels').truncate();
+    await knex('labels').truncate();
+    await knex('users').truncate();
+    await knex('statuses').truncate();
     // await knex.migrate.rollback();
   });
 
