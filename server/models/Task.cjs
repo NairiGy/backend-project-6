@@ -14,7 +14,7 @@ module.exports = class Task extends BaseModel {
       properties: {
         id: { type: 'integer' },
         description: { type: 'string' },
-        statusId: { type: 'integer' },
+        statusId: { type: 'integer', minimum: 1 },
         creatorId: { type: 'integer' },
         executorId: { type: 'integer' },
         name: { type: 'string', minLength: 1 },

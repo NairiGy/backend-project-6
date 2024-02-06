@@ -109,14 +109,13 @@ export default (app) => {
         });
         req.flash('info', i18next.t('flash.tasks.create.success'));
         reply.redirect(app.reverse('tasks'));
-      } catch (e) {
+      } catch ({ data }) {
         req.flash('error', i18next.t('flash.tasks.create.error'));
-        console.log(e);
         const statuses = await Status.query();
         const users = await User.query();
         const labels = await Label.query();
         reply.render('tasks/new', {
-          task, statuses, users, labels, errors: e,
+          task, statuses, users, labels, errors: data,
         });
       }
       return reply;

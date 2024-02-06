@@ -32,15 +32,9 @@ export default (app) => {
         await User.query().insert(validUser);
         req.flash('info', i18next.t('flash.users.create.success'));
         reply.redirect(app.reverse('root'));
-      } catch (e) {
+      } catch ({ data }) {
         req.flash('error', i18next.t('flash.users.create.error'));
-        const errors = {
-          firstName: e?.data?.firstName[0].message,
-          lastName: e?.data?.lastName[0].message,
-          email: e?.data?.email[0].message,
-          password: e?.data?.password[0].message,
-        };
-        reply.render('users/new', { user, errors });
+        reply.render('users/new', { user, errors: data });
       }
 
       return reply;
