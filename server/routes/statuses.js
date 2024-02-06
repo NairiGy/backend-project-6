@@ -63,10 +63,10 @@ export default (app) => {
       }
       try {
         await status.$query().delete();
-        req.flash('info', i18next.t('flash.labels.delete.success'));
+        req.flash('info', i18next.t('flash.statuses.delete.success'));
         reply.redirect(app.reverse('statuses'));
       } catch (e) {
-        req.flash('error', i18next.t('flash.labels.delete.error'));
+        req.flash('error', i18next.t('flash.statuses.delete.error'));
         console.log(e);
         reply.render('', { status, errors: e });
       }
