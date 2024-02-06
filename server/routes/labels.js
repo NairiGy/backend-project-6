@@ -30,10 +30,9 @@ export default (app) => {
         await Label.query().insert(validLabel);
         req.flash('info', i18next.t('flash.labels.create.success'));
         reply.redirect(app.reverse('labels'));
-      } catch (e) {
+      } catch ({ data }) {
         req.flash('error', i18next.t('flash.labels.create.error'));
-        console.log(e);
-        reply.render('labels/new', { label, errors: e });
+        reply.render('labels/new', { label, errors: data });
       }
       return reply;
     })

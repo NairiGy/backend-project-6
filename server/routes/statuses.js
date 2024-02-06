@@ -28,10 +28,9 @@ export default (app) => {
         await Status.query().insert(validStatus);
         req.flash('info', i18next.t('flash.statuses.create.success'));
         reply.redirect(app.reverse('statuses'));
-      } catch (e) {
+      } catch ({ data }) {
         req.flash('error', i18next.t('flash.statuses.create.error'));
-        console.log(e);
-        reply.render('statuses/new', { status, errors: e });
+        reply.render('statuses/new', { status, errors: data });
       }
       return reply;
     })
