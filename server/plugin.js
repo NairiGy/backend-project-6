@@ -32,6 +32,7 @@ const __dirname = fileURLToPath(path.dirname(import.meta.url));
 const mode = process.env.NODE_ENV || 'development';
 // const isDevelopment = mode === 'development';
 const fastifyPassport = new Authenticator();
+console.log(`Running in ${mode} mode`);
 
 const setUpViews = (app) => {
   const helpers = getHelpers(app);
@@ -63,8 +64,8 @@ const setUpStaticAssets = (app) => {
 const setupLocalization = async () => {
   await i18next
     .init({
-      lng: 'en',
-      fallbackLng: 'ru',
+      lng: 'ru',
+      fallbackLng: 'en',
       // debug: isDevelopment,
       resources: {
         ru,
