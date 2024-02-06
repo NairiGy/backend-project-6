@@ -9,5 +9,5 @@ block content
     +input(user, 'firstName', t('views.users.firstName'), errors)(type="text" value= user.firstName)
     +input(user, 'lastName', t('views.users.lastName'), errors)(type="text" value= user.lastName)
     +input(user, 'email', t('views.users.email'), errors)(type="text" value= user.email)
-    +input(user, 'password', t('views.users.password'), errors)(type="password" value= user.passwordDigest)
+    +input(user, 'password', t('views.users.password'), errors)(type="password" value='')
     +submit(user)(value=t('buttons.change'))
