@@ -137,7 +137,7 @@ export default {
         name: 'Наименование',
         createdAt: 'Дата создания',
         new: {
-          tittle: 'Создание метки',
+          title: 'Создание метки',
           submit: 'Создать метку',
         },
         actions: 'Действия',
@@ -153,7 +153,7 @@ export default {
         creator: 'Автор',
         createdAt: 'Дата создания',
         new: {
-          title: 'Создать задачу',
+          title: 'Создание задачи',
           submit: 'Создать задачу',
         },
         actions: 'Действия',
