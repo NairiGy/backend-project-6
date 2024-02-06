@@ -27,7 +27,7 @@ describe('test statuses CUD', () => {
     const params = createRandomStatus();
     const requestBody = {
       method: 'POST',
-      url: app.reverse('statuses'),
+      url: '/statuses',
       payload: {
         data: params,
       },
@@ -41,6 +41,7 @@ describe('test statuses CUD', () => {
       cookies: authCookie,
     });
     expect(responseWithAuth.statusCode).toBe(302);
+    console.log(responseWithAuth.payload);
     const status = await models.status.query().findOne({ name: params.name });
     expect(status).toMatchObject(params);
   });
@@ -97,7 +98,7 @@ describe('test statuses CUD', () => {
     await knex('labels').truncate();
     await knex('users').truncate();
     await knex('statuses').truncate();
-    // await knex.migrate.rollback();
+    await knex.migrate.rollback();
   });
 
   afterAll(async () => {

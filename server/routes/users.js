@@ -1,7 +1,5 @@
 // @ts-check
-
 import i18next from 'i18next';
-import { json } from 'stream/consumers';
 
 export default (app) => {
   const User = app.objection.models.user;

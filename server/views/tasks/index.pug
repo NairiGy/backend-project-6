@@ -12,21 +12,21 @@ block content
               select.form-select(id='data_status' name='status')
                 option
                 each status in statuses
-                  option(value=status.id)= status.name
+                  option(value=status.id, selected=(form.statusId === status.id))= status.name
             .col
               label(for='data_executor')=t('views.tasks.executor')
               select.form-select(id='data_executor' name='executor')
                 option
                 each user in users
-                  option(value=user.id)= `${user.firstName} ${user.lastName}`
+                  option(value=user.id, selected=(form.executorId === user.id))= `${user.firstName} ${user.lastName}`
             .col
               label(for='data_label')=t('views.tasks.label')
               select.form-select(id='data_label' name='label')
                 option
                 each label in labels
-                  option(value=label.id)= label.name
+                  option(value=label.id, selected=(form.labelId === label.id))= label.name
           .mb-3.form-check
-            input.form-check-input(type='checkbox' id='data_isCreatorUser' name='isCreatorUser')
+            input.form-check-input(type='checkbox' id='data_isCreatorUser' name='isCreatorUser', checked=form.isCreatorUser)
             label.form-check-label(for='data_isCreatorUser')= t('views.tasks.isCreatorUser')
           +submit(task)(value=t('buttons.filter'))
 

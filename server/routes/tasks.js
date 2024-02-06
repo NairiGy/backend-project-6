@@ -26,25 +26,29 @@ export default (app) => {
       const statuses = await Status.query();
       const users = await User.query();
       const labels = await Label.query();
+      const form = {};
       let query = Task.query().withGraphFetched('[status, creator, executor, labels]');
       if (req.query.isCreatorUser) {
         query = query.where('creatorId', req.user.id);
+        form.isCreatorUser = true;
       }
       if (req.query.status) {
         query = query.where('statusId', req.query.status);
+        form.statusId = Number(req.query.status);
       }
       if (req.query.executor) {
         query = query.where('executorId', req.query.executor);
+        form.executorId = Number(req.query.executor);
       }
       if (req.query.label) {
         query = query.joinRelated('labels').where('labels.id', req.query.label);
+        form.labelId = Number(req.query.label);
       } else {
         query = query.withGraphFetched('labels');
       }
       const tasks = await query;
-
       reply.render('/tasks/index', {
-        tasks, statuses, users, labels,
+        tasks, statuses, users, labels, form,
       });
 
       return reply;
