@@ -8,3 +8,4 @@ temp/
 database.sqlite
 .env
 server/migrations/3*
+coverage
