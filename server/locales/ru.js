@@ -122,7 +122,10 @@ export default {
         title: 'Статусы',
         name: 'Наименование',
         createdAt: 'Дата создания',
-        new: 'Создание статуса',
+        new: {
+          title: 'Создание статуса',
+          submit: 'Создать статус',
+        },
         actions: 'Действия',
         edit: {
           title: 'Изменение статуса',
@@ -133,7 +136,10 @@ export default {
         title: 'Метки',
         name: 'Наименование',
         createdAt: 'Дата создания',
-        new: 'Создание метки',
+        new: {
+          tittle: 'Создание метки',
+          submit: 'Создать метку',
+        },
         actions: 'Действия',
         editTitle: 'Изменение метки',
       },
@@ -146,7 +152,10 @@ export default {
         executor: 'Исполнитель',
         creator: 'Автор',
         createdAt: 'Дата создания',
-        new: 'Создать задачу',
+        new: {
+          title: 'Создать задачу',
+          submit: 'Создать задачу',
+        },
         actions: 'Действия',
         isCreatorUser: 'Только мои задачи',
         labels: 'Метки',
