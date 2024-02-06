@@ -1,6 +1,7 @@
 // @ts-check
 
 import i18next from 'i18next';
+import { json } from 'stream/consumers';
 
 export default (app) => {
   const User = app.objection.models.user;
@@ -35,8 +36,13 @@ export default (app) => {
         reply.redirect(app.reverse('root'));
       } catch (e) {
         req.flash('error', i18next.t('flash.users.create.error'));
-        console.log(e);
-        reply.render('users/new', { user, errors: e });
+        const errors = {
+          firstName: e?.data?.firstName[0].message,
+          lastName: e?.data?.lastName[0].message,
+          email: e?.data?.email[0].message,
+          password: e?.data?.password[0].message,
+        };
+        reply.render('users/new', { user, errors });
       }
 
       return reply;
