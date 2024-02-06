@@ -112,7 +112,7 @@ export default {
         actions: 'Действия',
         password: 'Пароль',
         new: {
-          submit: 'Сохраниить',
+          submit: 'Сохранить',
           signUp: 'Регистрация',
         },
         editTitle: 'Изменение пользователя',
