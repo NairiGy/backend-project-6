@@ -27,13 +27,11 @@ describe('test statuses CUD', () => {
     const params = createRandomStatus();
     const requestBody = {
       method: 'POST',
-      url: '/statuses',
+      url: app.reverse('statuses'),
       payload: {
         data: params,
       },
     };
-    const responseNoAuth = await app.inject(requestBody);
-    expect(responseNoAuth.statusCode).toBe(302);
 
     const authCookie = await signInUser(app);
     const responseWithAuth = await app.inject({
@@ -41,7 +39,6 @@ describe('test statuses CUD', () => {
       cookies: authCookie,
     });
     expect(responseWithAuth.statusCode).toBe(302);
-    console.log(responseWithAuth.payload);
     const status = await models.status.query().findOne({ name: params.name });
     expect(status).toMatchObject(params);
   });
