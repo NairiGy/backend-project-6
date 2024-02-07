@@ -28,7 +28,7 @@ export const test = {
 
 export const production = {
   client: 'pg',
-  connection: 'postgres://postgresql_54lw_user:0zbHduxRmHLFLjjqDkbaofs3P9zwjJ2V@dpg-cmjpvp7qd2ns73bkg82g-a/postgresql_54lw',
+  connection: process.env.PG_CONNECTION_STRING,
   // debug: true,
   useNullAsDefault: true,
   migrations,
