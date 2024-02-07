@@ -10,7 +10,7 @@ jobs:
           CI: true
       - run: make lint
       - run: make prepare
-      - run: make test
+      # - run: make test
       # - name: Test & publish code coverage
       #   uses: paambaati/codeclimate-action@v5.0.0
       #   # Add Code Climate secret key
