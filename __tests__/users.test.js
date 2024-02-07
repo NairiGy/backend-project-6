@@ -100,7 +100,6 @@ describe('test users CUD', () => {
     await knex('labels').truncate();
     await knex('users').truncate();
     await knex('statuses').truncate();
-    // await knex.migrate.rollback();
   });
 
   afterAll(async () => {

@@ -22,7 +22,7 @@ mixin input(entity, propertyName, displayName, errors = {})
     if !_.isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
 
-mixin select(entity, propertyName, displayName, errors = {}, opts = [])
+mixin select(entity, propertyName, displayName,  opts = [], errors = {})
   - propertyErrors = _.get(errors, propertyName)
   - classLine = 'select form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
   - inputId = getInputId(propertyName)

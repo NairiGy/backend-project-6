@@ -16,6 +16,26 @@ const getSelectedItems = (items, ids) => items.map((item) => ({
   selected: ids.includes(item.id),
 }));
 
+const fetchData = async (Status, User, Label) => {
+  const [statuses, users, labels] = await Promise.all([
+    Status.query(),
+    User.query(),
+    Label.query(),
+  ]);
+  return { statuses, users, labels };
+};
+
+const processData = async (task, statuses, users, labels) => {
+  const relatedLabels = await task.$relatedQuery('labels');
+  const relatedLabelsIds = relatedLabels.map((label) => label.id);
+
+  const statusesWithSelected = getSelectedItems(statuses, [task.statusId]);
+  const usersWithSelected = getSelectedItems(users, [task.executorId]);
+  const labelsWithSelected = getSelectedItems(labels, relatedLabelsIds);
+
+  return { statuses: statusesWithSelected, users: usersWithSelected, labels: labelsWithSelected };
+};
+
 export default (app) => {
   const Task = app.objection.models.task;
   const Status = app.objection.models.status;
@@ -23,9 +43,7 @@ export default (app) => {
   const Label = app.objection.models.label;
   app
     .get('/tasks', { name: 'tasks', preValidation: app.authenticate }, async (req, reply) => {
-      const statuses = await Status.query();
-      const users = await User.query();
-      const labels = await Label.query();
+      const { statuses, users, labels } = await fetchData(Status, User, Label);
       const form = {};
       let query = Task.query().withGraphFetched('[status, creator, executor, labels]');
       if (req.query.isCreatorUser) {
@@ -55,9 +73,7 @@ export default (app) => {
     })
     .get('/tasks/new', { name: 'newTask', preValidation: app.authenticate }, async (req, reply) => {
       const task = new Task();
-      const statuses = await Status.query();
-      const users = await User.query();
-      const labels = await Label.query();
+      const { statuses, users, labels } = await fetchData(Status, User, Label);
       reply.render('tasks/new', {
         task, statuses, users, labels,
       });
@@ -72,19 +88,11 @@ export default (app) => {
     .get('/tasks/:id/edit', { name: 'taskUpdate', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const task = await Task.query().findOne({ id });
-      const statuses = await Status.query();
-      const users = await User.query();
-      const labels = await Label.query();
-      const relatedLabels = await task.$relatedQuery('labels');
-      const relatedLabelsIds = relatedLabels.map((label) => label.id);
-      const statusesWithSelected = getSelectedItems(statuses, [task.statusId]);
-      const usersWithSelected = getSelectedItems(users, [task.executorId]);
-      const labelsWithSelected = getSelectedItems(labels, relatedLabelsIds);
+      const { statuses, users, labels } = await fetchData(Status, User, Label);
+      const relatedData = await processData(task, statuses, users, labels);
       reply.render('tasks/edit', {
         task,
-        statuses: statusesWithSelected,
-        users: usersWithSelected,
-        labels: labelsWithSelected,
+        ...relatedData,
       });
       return reply;
     })
@@ -141,20 +149,11 @@ export default (app) => {
         reply.redirect(app.reverse('tasks'));
       } catch (e) {
         req.flash('error', i18next.t('flash.tasks.update.error'));
-        console.log(e);
-        const relatedLabels = await task.$relatedQuery('labels');
-        const relatedLabelsIds = relatedLabels.map((label) => label.id);
-        const statuses = await Status.query();
-        const users = await User.query();
-        const labels = await Label.query();
-        const statusesWithSelected = getSelectedItems(statuses, [task.statusId]);
-        const usersWithSelected = getSelectedItems(users, [task.executorId]);
-        const labelsWithSelected = getSelectedItems(labels, relatedLabelsIds);
+        const { statuses, users, labels } = await fetchData(Status, User, Label);
+        const relatedData = await processData(task, statuses, users, labels);
         reply.render('tasks/edit', {
           task,
-          statuses: statusesWithSelected,
-          users: usersWithSelected,
-          labels: labelsWithSelected,
+          ...relatedData,
         });
       }
       return reply;
@@ -169,10 +168,9 @@ export default (app) => {
         });
         req.flash('info', i18next.t('flash.tasks.delete.success'));
         reply.redirect(app.reverse('tasks'));
-      } catch (e) {
+      } catch ({ data }) {
         req.flash('error', i18next.t('flash.tasks.delete.error'));
-        console.log(e);
-        reply.render('', { task, errors: e });
+        reply.redirect(app.reverse('tasks'), { task, errors: data });
       }
       return reply;
     });

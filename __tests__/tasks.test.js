@@ -89,7 +89,6 @@ describe('test tasks CUD', () => {
   it('filter', async () => {
     const authCookie = await signInUser(app);
     const tasks = await models.task.query().withGraphFetched('executor');
-    // const expected = tasks.map((task) => task.executor.id);
     const response = await app.inject({
       method: 'GET',
       url: `/tasks?executor=${tasks[0].executor.id}`,
@@ -118,7 +117,6 @@ describe('test tasks CUD', () => {
     await knex('labels').truncate();
     await knex('users').truncate();
     await knex('statuses').truncate();
-    // await knex.migrate.rollback();
   });
 
   afterAll(async () => {

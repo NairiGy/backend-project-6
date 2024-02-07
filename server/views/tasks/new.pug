@@ -7,7 +7,7 @@ block content
   +formFor()(action=route('tasks') method='post')
     +input(task, 'name', t('views.tasks.name'), errors)(type="text")
     +input(task, 'description', t('views.tasks.description'), errors)(type="text")
-    +select(task, 'statusId', t('views.tasks.status'), errors, statuses)
+    +select(task, 'statusId', t('views.tasks.status'), statuses, errors)
     .mb-3
       label(for='data_executorId')=t('views.tasks.executor')
       select.form-control(id='data_executorId' name='data[executorId]')

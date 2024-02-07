@@ -12,13 +12,8 @@ export default (app) => {
       const label = new Label();
       reply.render('/labels/new', { label });
     })
-    .get('/labels/:id/edit', { name: 'labelUpdate' }, async (req, reply) => {
+    .get('/labels/:id/edit', { name: 'labelUpdate', preValidation: app.authenticate }, async (req, reply) => {
       const label = await Label.query().where('id', req.params.id);
-      if (!req.user) {
-        req.flash('error', i18next.t('flash.authError'));
-        reply.redirect(app.reverse('newSession'));
-        return reply;
-      }
       reply.render('labels/edit', { label: label[0] });
       return reply;
     })
