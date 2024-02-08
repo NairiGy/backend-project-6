@@ -29,7 +29,7 @@ export const createRandomTask = () => ({
   description: faker.lorem.paragraph(),
   statusId: faker.number.int({ min: 1, max: 5 }),
   executorId: faker.number.int({ min: 1, max: 5 }),
-  labels: [faker.number.int({ min: 1, max: 5 }), faker.number.int({ min: 1, max: 5 })],
+  labels: [1, 3],
 });
 
 export const prepareStatusesData = async (app) => {

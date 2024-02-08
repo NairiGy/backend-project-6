@@ -4,8 +4,6 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import fastifyStatic from '@fastify/static';
 import Rollbar from 'rollbar';
-// NOTE: не поддердивает fastify 4.x
-// import fastifyErrorPage from 'fastify-error-page';
 import fastifyView from '@fastify/view';
 import fastifyFormbody from '@fastify/formbody';
 import fastifySecureSession from '@fastify/secure-session';
@@ -84,11 +82,10 @@ const addHooks = (app) => {
 
 const registerPlugins = async (app) => {
   await app.register(fastifySensible);
-  // await app.register(fastifyErrorPage);
   await app.register(fastifyReverseRoutes);
   await app.register(fastifyFormbody, { parser: qs.parse });
   await app.register(fastifySecureSession, {
-    secret: process.env.SESSION_KEY || '4fe91796c30bd989d95b62dc46c7c3ba0b6aa2df2187400586a4121c54c53b85',
+    secret: process.env.SESSION_KEY,
     cookie: {
       path: '/',
     },
@@ -127,7 +124,7 @@ export default async (app, _options) => {
   // include and initialize the rollbar library with your access token
 
   const rollbar = new Rollbar({
-    accessToken: process.env.ROLLBAR_TOKEN || '2a931460db184b9fa1fef90c62be8554',
+    accessToken: process.env.ROLLBAR_TOKEN,
     captureUncaught: true,
     captureUnhandledRejections: true,
   });

@@ -60,7 +60,6 @@ export default (app) => {
         reply.redirect(app.reverse('labels'));
       } catch (e) {
         req.flash('error', i18next.t('flash.labels.delete.error'));
-        console.log(e);
         reply.render('', { label, errors: e });
       }
       return reply;

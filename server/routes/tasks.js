@@ -1,8 +1,5 @@
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-await-in-loop */
 import i18next from 'i18next';
 import { transaction } from 'objection';
-import _ from 'lodash';
 
 /**
  * Maps each item with a selected flag based on the provided ids.
@@ -99,21 +96,23 @@ export default (app) => {
     .post('/tasks', { preValidation: app.authenticate }, async (req, reply) => {
       const task = new Task();
       try {
-        const { labels } = req.body.data;
-        const data = {
-          ..._.omit(req.body.data, 'labels'),
+        const labelIds = req.body.data.labels.map?.(Number) || [Number(req.body.data.labels)];
+        const labels = await Label.query().whereIn('id', labelIds);
+        const taskData = {
+          name: req.body.data.name,
+          description: req.body.data.description,
           statusId: Number(req.body.data.statusId),
           executorId: Number(req.body.data.executorId),
           creatorId: req.user.id,
+          labels,
         };
-        await transaction(Task.knex(), async (trx) => {
-          task.$set(data);
-          const validTask = await Task.fromJson(data);
-          const insertedTask = await Task.query(trx).insert(validTask);
-          const toInsert = [labels].flat().map((lb) => Number(lb));
-          for (const labelId of toInsert) {
-            await insertedTask.$relatedQuery('labels', trx).relate(labelId);
-          }
+        await Task.transaction(async (trx) => {
+          const insertedTask = await Task.query(trx)
+            .allowGraph('labels')
+            .upsertGraph(taskData, {
+              relate: true, unrelate: true, noDelete: true,
+            });
+          return insertedTask;
         });
         req.flash('info', i18next.t('flash.tasks.create.success'));
         reply.redirect(app.reverse('tasks'));
@@ -132,18 +131,25 @@ export default (app) => {
       const { id } = req.params;
       const task = await Task.query().findOne({ id });
       try {
-        await transaction(Task.knex(), async (trx) => {
-          await task.$query(trx).patch({
-            ..._.omit(req.body.data, 'labels'),
-            statusId: Number(req.body.data.statusId),
-            executorId: Number(req.body.data.executorId),
-          });
-          await task.$relatedQuery('labels', trx).unrelate();
-          const newLabels = [req.body.data.labels].flat();
-          const toInsert = newLabels.map((lb) => Number(lb));
-          for (const labelId of toInsert) {
-            await task.$relatedQuery('labels', trx).relate(labelId);
-          }
+        const labelIds = req.body.data.labels.map?.(Number) || [Number(req.body.data.labels)];
+        const labels = await Label.query().whereIn('id', labelIds);
+        const taskData = {
+          id: Number(id),
+          name: req.body.data.name,
+          description: req.body.data.description,
+          statusId: Number(req.body.data.statusId),
+          executorId: Number(req.body.data.executorId),
+          creatorId: task.creatorId,
+          labels,
+        };
+        await Task.transaction(async (trx) => {
+          const updatedTask = await Task.query(trx)
+            .allowGraph('labels')
+            .upsertGraph(taskData, {
+              relate: true, unrelate: true, noDelete: true,
+            });
+
+          return updatedTask;
         });
         req.flash('info', i18next.t('flash.tasks.update.success'));
         reply.redirect(app.reverse('tasks'));
@@ -162,7 +168,7 @@ export default (app) => {
       const { id } = req.params;
       const task = await Task.query().findOne({ id });
       try {
-        await transaction(Task.knex(), async (trx) => {
+        Task.transaction(async (trx) => {
           await task.$relatedQuery('labels', trx).unrelate();
           await task.$query(trx).delete();
         });

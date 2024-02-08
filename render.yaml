@@ -6,15 +6,3 @@ services:
     autoDeploy: false
     buildCommand: make setup
     startCommand: make start
-  # - name: database-migration
-  #   type: job
-  #   plan: free
-  #   buildCommand: make db-migrate
-  #   environment:
-  #     - key: DATABASE_URL
-  #       value: 'postgres://postgresql_54lw_user:0zbHduxRmHLFLjjqDkbaofs3P9zwjJ2V@dpg-cmjpvp7qd2ns73bkg82g-a/postgresql_54lw'
-# databases:
-#   - name: PostgreSQL
-#     type: postgresql
-#     plan: starter
-#     version: 15

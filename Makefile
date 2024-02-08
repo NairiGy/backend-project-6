@@ -12,8 +12,7 @@ build:
 prepare:
 	cp -n .env.example .env || true
 
-start:
-	heroku local -f Procfile.dev
+start: start-backend start-frontend
 
 start-backend:
 	npm start -- --watch --verbose-watch --ignore-watch='node_modules .git .sqlite'
