@@ -95,7 +95,7 @@ export default (app) => {
     .post('/tasks', { preValidation: app.authenticate }, async (req, reply) => {
       const task = new Task();
       try {
-        const labelIds = req.body.data.labels.map?.(Number) || [Number(req.body.data.labels)];
+        const labelIds = [req.body.data?.labels ?? []].flat();
         const labels = await Label.query().whereIn('id', labelIds);
         const taskData = {
           name: req.body.data.name,
@@ -130,7 +130,7 @@ export default (app) => {
       const { id } = req.params;
       const task = await Task.query().findOne({ id });
       try {
-        const labelIds = req.body.data.labels.map?.(Number) || [Number(req.body.data.labels)];
+        const labelIds = [req.body.data?.labels ?? []].flat().map(Number);
         const labels = await Label.query().whereIn('id', labelIds);
         const taskData = {
           id: Number(id),
