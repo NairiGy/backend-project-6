@@ -1,7 +1,7 @@
 // @ts-check
 import { fastify } from 'fastify';
 import init from '../server/plugin.js';
-import { prepareUsersData, signInUser } from './helpers/index.js';
+import { prepareUsersData, signInUser, truncateTables } from './helpers/index.js';
 
 let app;
 let knex;
@@ -97,11 +97,7 @@ describe('test entity creation views', () => {
 });
 
 afterEach(async () => {
-  await knex('tasks').truncate();
-  await knex('tasks_labels').truncate();
-  await knex('labels').truncate();
-  await knex('users').truncate();
-  await knex('statuses').truncate();
+  await truncateTables(knex);
 });
 
 afterAll(async () => {

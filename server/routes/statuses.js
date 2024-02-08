@@ -43,7 +43,6 @@ export default (app) => {
         reply.redirect(app.reverse('statuses'));
       } catch (e) {
         req.flash('error', i18next.t('flash.statuses.update.error'));
-        console.log(e);
         reply.render('statuses/edit', { status, errors: e });
       }
       return reply;
@@ -66,7 +65,6 @@ export default (app) => {
         reply.redirect(app.reverse('statuses'));
       } catch (e) {
         req.flash('error', i18next.t('flash.statuses.delete.error'));
-        console.log(e);
         reply.render('', { status, errors: e });
       }
       return reply;

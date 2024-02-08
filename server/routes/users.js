@@ -14,12 +14,7 @@ export default (app) => {
       const user = new User();
       reply.render('users/new', { user });
     })
-    .get('/users/:id/edit', { preValidation: app.authenticate }, async (req, reply) => {
-      if (req.user.id !== Number(req.params.id)) {
-        req.flash('error', i18next.t('flash.notSameUser'));
-        reply.redirect(app.reverse('users'));
-        return reply;
-      }
+    .get('/users/:id/edit', { preValidation: app.authenticate, preHandler: app.requireSameUser }, async (req, reply) => {
       const user = await User.query().where('id', req.params.id);
       reply.render('users/edit', { user: user[0] });
       return reply;
@@ -48,19 +43,13 @@ export default (app) => {
         reply.redirect(app.reverse('users'));
       } catch (e) {
         req.flash('error', i18next.t('flash.users.update.error'));
-        console.log(e);
         reply.render('users/edit', { user, errors: e });
       }
       return reply;
     })
-    .delete('/users/:id', { name: 'deleteUser', preValidation: app.authenticate }, async (req, reply) => {
+    .delete('/users/:id', { name: 'deleteUser', preValidation: app.authenticate, preHandler: app.requireSameUser }, async (req, reply) => {
       const { id } = req.params;
       const user = await User.query().findOne({ id });
-      if (req.user.id !== Number(req.params.id)) {
-        req.flash('error', i18next.t('flash.notSameUser'));
-        reply.redirect(app.reverse('users'));
-        return reply;
-      }
       const tasks = await Task
         .query()
         .where('executorId', id)
@@ -78,7 +67,6 @@ export default (app) => {
         reply.redirect(app.reverse('users'));
       } catch (e) {
         req.flash('error', i18next.t('flash.users.delete.error'));
-        console.log(e);
         reply.render('', { user, errors: e });
       }
       return reply;

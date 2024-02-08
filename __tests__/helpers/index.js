@@ -130,3 +130,13 @@ export const signInUser = async (app) => {
 
   return { [name]: value };
 };
+
+export const truncateTables = async (knex) => {
+  await Promise.all([
+    knex('tasks').truncate(),
+    knex('tasks_labels').truncate(),
+    knex('labels').truncate(),
+    knex('users').truncate(),
+    knex('statuses').truncate(),
+  ]);
+};

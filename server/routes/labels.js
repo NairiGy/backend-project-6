@@ -40,7 +40,6 @@ export default (app) => {
         reply.redirect(app.reverse('labels'));
       } catch (e) {
         req.flash('error', i18next.t('flash.labels.update.error'));
-        console.log(e);
         reply.render('labels/edit', { label, errors: e });
       }
       return reply;

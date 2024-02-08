@@ -1,7 +1,9 @@
 // @ts-check
 import { fastify } from 'fastify';
 import init from '../server/plugin.js';
-import { prepareTasksData, createRandomTask, signInUser } from './helpers/index.js';
+import {
+  prepareTasksData, createRandomTask, signInUser, truncateTables,
+} from './helpers/index.js';
 
 describe('test tasks CUD', () => {
   let app;
@@ -112,19 +114,10 @@ describe('test tasks CUD', () => {
   });
 
   afterEach(async () => {
-    await knex('tasks').truncate();
-    await knex('tasks_labels').truncate();
-    await knex('labels').truncate();
-    await knex('users').truncate();
-    await knex('statuses').truncate();
+    await truncateTables(knex);
   });
 
   afterAll(async () => {
-    await knex('tasks').truncate();
-    await knex('tasks_labels').truncate();
-    await knex('labels').truncate();
-    await knex('users').truncate();
-    await knex('statuses').truncate();
     await app.close();
   });
 });

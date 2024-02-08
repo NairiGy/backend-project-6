@@ -4,7 +4,9 @@ import { fastify } from 'fastify';
 
 import init from '../server/plugin.js';
 import encrypt from '../server/lib/secure.cjs';
-import { getTestData, prepareUsersData, signInUser } from './helpers/index.js';
+import {
+  getTestData, prepareUsersData, signInUser, truncateTables,
+} from './helpers/index.js';
 
 describe('test users CUD', () => {
   let app;
@@ -95,11 +97,7 @@ describe('test users CUD', () => {
   });
 
   afterEach(async () => {
-    await knex('tasks').truncate();
-    await knex('tasks_labels').truncate();
-    await knex('labels').truncate();
-    await knex('users').truncate();
-    await knex('statuses').truncate();
+    await truncateTables(knex);
   });
 
   afterAll(async () => {

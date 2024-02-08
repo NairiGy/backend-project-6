@@ -1,7 +1,7 @@
 // @ts-check
 import { fastify } from 'fastify';
 import init from '../server/plugin.js';
-import { getTestData, prepareUsersData } from './helpers/index.js';
+import { getTestData, prepareUsersData, truncateTables } from './helpers/index.js';
 
 describe('test session', () => {
   let app;
@@ -55,12 +55,7 @@ describe('test session', () => {
   });
 
   afterEach(async () => {
-    await knex('tasks').truncate();
-    await knex('tasks_labels').truncate();
-    await knex('labels').truncate();
-    await knex('users').truncate();
-    await knex('statuses').truncate();
-    // await knex.migrate.rollback();
+    await truncateTables(knex);
   });
 
   afterAll(async () => {

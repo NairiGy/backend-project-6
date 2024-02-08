@@ -107,6 +107,14 @@ const registerPlugins = async (app) => {
     },
   // @ts-ignore
   )(...args));
+  await app.decorate('requireSameUser', (req, reply, done) => {
+    if (req.user.id !== Number(req.params.id)) {
+      req.flash('error', i18next.t('flash.notSameUser'));
+      reply.redirect(app.reverse('users'));
+      return reply;
+    }
+    return done();
+  });
 
   await app.register(fastifyMethodOverride);
   await app.register(fastifyObjectionjs, {
