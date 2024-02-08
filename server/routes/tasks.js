@@ -1,5 +1,4 @@
 import i18next from 'i18next';
-import { transaction } from 'objection';
 
 /**
  * Maps each item with a selected flag based on the provided ids.
