@@ -8,9 +8,9 @@
 
 Task Manager – система управления задачами, подобная http://www.redmine.org/. Она позволяет ставить задачи, назначать исполнителей и менять их статусы. Для работы с системой требуется регистрация и аутентификация.
 
-![Экран управления задачами](https://github.com/NairiGy/backend-project-6/blob/main/task-manager.png?raw=true)
+![Экран управления задачами](https://github.com/NairiGy/backend-project-6/blob/main/readme/task-manager.png?raw=true)
 
-![Карточка задачи](https://github.com/NairiGy/backend-project-6/blob/main/Screenshot from 2024-02-13 09-08-07.png?raw=true)
+![Карточка задачи](https://github.com/NairiGy/backend-project-6/blob/main/readme/Screenshot.png?raw=true)
 
 [Демо приложения на render.com](https://fastify-3ddj.onrender.com)
 

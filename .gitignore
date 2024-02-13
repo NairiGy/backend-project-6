@@ -12,4 +12,3 @@ coverage/
 docker_app/
 Dockerfile
 .dockerignore
-readme/
