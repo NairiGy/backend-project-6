@@ -12,7 +12,7 @@ Task Manager – система управления задачами, подо�
 
 ![Карточка задачи](https://github.com/NairiGy/backend-project-6/blob/main/readme/Screenshot.png?raw=true)
 
-[Демо приложения на render.com](https://fastify-3ddj.onrender.com)
+[Демо приложения на render.com(Поднятие инстанса занимает где-то минуту)](https://fastify-3ddj.onrender.com)
 
 ## Setup
 
