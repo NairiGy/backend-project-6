@@ -12,12 +12,28 @@ Task Manager – система управления задачами, подо�
 
 ![Карточка задачи](https://github.com/NairiGy/backend-project-6/blob/main/readme/Screenshot.png?raw=true)
 
-[Демо приложения на render.com(Поднятие замороженного инстанса занимает где-то минуту)](https://fastify-3ddj.onrender.com)
+[Демо приложения на render.com (поднятие замороженного инстанса занимает где-то минуту)](https://fastify-3ddj.onrender.com)
+
+### Локальный запуск
+
+```bash
+git clone git@github.com:NairiGy/backend-project-6.git
+```
+
+```bash
+cd backend-project-6/
+```
 
 ## Setup
 
 ```bash
 make setup
+```
+
+## Build
+
+```bash
+make build
 ```
 
 ## Test
@@ -29,6 +45,6 @@ make test
 ## Run
 
 ```bash
-$ make start
+make start
 # Open 0.0.0.0:10000
 ```
