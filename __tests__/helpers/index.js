@@ -62,57 +62,22 @@ export const prepareTasksData = async (app) => {
   }));
 
   await knex('tasks').insert(tasks);
-  await knex('tasks_labels').insert([
-    {
-      task_id: 1,
-      label_id: 1,
-    },
-    {
-      task_id: 1,
-      label_id: 2,
-    },
-    {
-      task_id: 1,
-      label_id: 3,
-    },
-    {
-      task_id: 1,
-      label_id: 4,
-    },
-    {
-      task_id: 1,
-      label_id: 5,
-    },
-    {
-      task_id: 2,
-      label_id: 1,
-    },
-    {
-      task_id: 3,
-      label_id: 1,
-    },
-    {
-      task_id: 3,
-      label_id: 2,
-    },
+  const taskLabels = [
+    { taskId: 1, labelId: 1 },
+    { taskId: 1, labelId: 2 },
+    { taskId: 1, labelId: 3 },
+    { taskId: 1, labelId: 4 },
+    { taskId: 1, labelId: 5 },
+    { taskId: 2, labelId: 1 },
+    { taskId: 3, labelId: 1 },
+    { taskId: 3, labelId: 2 },
+    { taskId: 4, labelId: 4 },
+    { taskId: 4, labelId: 5 },
+    { taskId: 5, labelId: 1 },
+    { taskId: 5, labelId: 5 },
+  ];
 
-    {
-      task_id: 4,
-      label_id: 4,
-    },
-    {
-      task_id: 4,
-      label_id: 5,
-    },
-    {
-      task_id: 5,
-      label_id: 1,
-    },
-    {
-      task_id: 5,
-      label_id: 5,
-    },
-  ]);
+  await knex('tasks_labels').insert(taskLabels);
 };
 
 export const signInUser = async (app) => {
